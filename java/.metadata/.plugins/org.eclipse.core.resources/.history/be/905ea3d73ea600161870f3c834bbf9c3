@@ -1,0 +1,16 @@
+package org.nju.ene.pojo;
+
+public class EneParameterRange {
+	//上限的最高值
+	private int upperMax;
+	//上限的最高值
+	private int upperMin;
+	//上限的最高值
+	private int lowerMax;
+	//上限的最高值
+	private int lowerMix;
+	//上限的最高值
+	private int daysMax;
+	//上限的最高值
+	private int daysMin;
+}

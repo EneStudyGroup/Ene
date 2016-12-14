@@ -1,0 +1,10 @@
+package org.nju.ene.pojo;
+
+public class EneParameterLimit {
+	private int upperMax;
+	private int upperMin;
+	private int lowerMax;
+	private int lowerMix;
+	private int daysMax;
+	private int daysMin;
+}

@@ -1,0 +1,134 @@
+package org.nju.ene.util;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import org.nju.ene.pojo.StockEneInfo;
+
+import com.mysql.jdbc.ResultSetMetaData;
+
+public class MySQLUtil {
+	
+	/**
+	 * 获取数据库的连接
+	 * 
+	 * @return mysql连接
+	 */
+	public Connection getConnection(){
+		Connection connection = null;
+		String url = "jdbc:mysql://121.42.143.164:3306/stock";
+		String username = "admin";
+		String password = "NJU2016";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager.getConnection(url, username, password);
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return connection;
+	}
+	
+	/**
+	 * 释放数据库连接
+	 * 
+	 * @param connection 一个mysql连接
+	 */
+	public void releaseConnection(Connection connection){
+		if(connection != null){
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 释放数据库搜索结果
+	 * 
+	 * @param connection 一个mysql搜索结果
+	 */
+	public void releaseResultSet(ResultSet resultSet){
+		if(resultSet != null){
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 释放数据库状态连接
+	 * 
+	 * @param statement 一个mysql语句
+	 */
+	public void releaseStatement(Statement statement){
+		if(statement != null){
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 获取某一只股票的ENE指标所需要的历史k线数据
+	 * 
+	 * @param stockCode 股票代号
+	 * @return 历史k线数据集
+	 */
+	public static ArrayList<StockEneInfo> getStockEneInfos(String stockCode){
+		ArrayList<StockEneInfo> stockEneInfos = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		MySQLUtil mysql = new MySQLUtil();
+		Connection connection = mysql.getConnection();
+		
+		String index = MySQLHelperUtil.getStocksKInfoTableName(stockCode);
+		String sql = "select * from " + index + " where code=?";
+		try {
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, stockCode);
+			rs = ps.executeQuery();
+			
+			while(rs.next()){
+//				java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+//				for(int i=1;i<rsmd.getColumnCount()+1;i++){
+//					System.out.println(i);
+//				    System.out.println(rsmd.getColumnClassName(i));
+//				    System.out.println(rsmd.getColumnName(i));	
+//				}
+				String code = rs.getString("code");
+				Date date = rs.getDate("date");
+				Double high = rs.getDouble("high");
+				Double low = rs.getDouble("low");
+				Double open = rs.getDouble("open");
+				Double close = rs.getDouble("close");
+				System.out.println(stockCode+": "+date+": "+high+": "+low+": "+open+": "+close);
+				StockEneInfo stockEneInfo = new StockEneInfo();
+				stockEneInfo.setCode(code);
+				stockEneInfo.setHigh(high);
+				stockEneInfo.setLow(low);
+				stockEneInfo.setOpen(open);
+				stockEneInfo.setClose(close);
+				stockEneInfos.add(stockEneInfo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			mysql.releaseResultSet(rs);
+			mysql.releaseStatement(ps);
+			mysql.releaseConnection(connection);
+		}
+		return stockEneInfos;
+	}
+}

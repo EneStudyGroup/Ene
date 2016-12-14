@@ -1,0 +1,18 @@
+package org.nju.ene.pojo;
+
+public class EneParameterRange {
+	//股票代号
+	private String code;
+	//上限的最高值
+	private int upperMax;
+	//上限的最低值
+	private int upperMin;
+	//下限的最高值
+	private int lowerMax;
+	//下限的最低值
+	private int lowerMix;
+	//天数的最高值
+	private int daysMax;
+	//天数的最低值
+	private int daysMin;
+}

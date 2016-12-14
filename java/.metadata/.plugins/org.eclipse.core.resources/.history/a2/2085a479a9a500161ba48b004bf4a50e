@@ -1,0 +1,19 @@
+package org.nju.ene.util;
+
+import java.util.Date;
+
+public class CommonUtil {
+	/**
+	 * 将java.sql.Date类型转换为java.util.Date类型
+	 * @param date
+	 * @return
+	 */
+	public static Date transformDate(java.sql.Date date){
+		Date utilDate = new Date(date.getTime());
+		return utilDate;
+	}
+	
+	public static Date getDaysAfter(Date date, int days){
+		
+	}
+}

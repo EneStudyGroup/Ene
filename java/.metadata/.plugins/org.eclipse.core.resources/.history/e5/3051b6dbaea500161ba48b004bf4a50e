@@ -1,0 +1,118 @@
+package org.nju.ene.util;
+
+import java.util.Date;
+import java.util.ArrayList;
+
+import org.nju.ene.pojo.EneParameter;
+import org.nju.ene.pojo.StockEneInfo;
+
+public class EneQuotaUtil {
+	private static ArrayList<StockEneInfo> infoList;
+
+	/**
+	 * 获取一个股票在指定ENE参数内的适宜程度
+	 * 
+	 * @param eneParameter
+	 *            ENE参数
+	 * @return 适宜程度
+	 */
+	public static double getStandardFrequency(EneParameter eneParameter) {
+		int times = 0;
+		double frequency = 0;
+		infoList = MySQLUtil.getStockEneInfos(eneParameter.getCode());
+		int length = infoList.size();
+		
+		for(int i=0;i<infoList.size();i++){
+			int index = length - 1 - i;
+			StockEneInfo info = infoList.get(index);
+			double avgClose = getAvgClose(info, index, eneParameter.getDays());
+			double upper = getUpperIndex(eneParameter.getUpper(), avgClose);
+			double lower = getLowerIndex(eneParameter.getLower(), avgClose);
+		//	System.out.println(avgClose+": "+upper+": "+lower);
+			if(info.getHigh()<=upper && info.getLow()>=lower)
+				times++;
+		}
+		frequency = times/length;
+		return frequency;
+	}
+
+	/**
+	 * 获取一个股票最适宜的ENE参数
+	 * 
+	 * @param stockCode
+	 *            股票代号
+	 * @return 最适宜的ENE参数
+	 */
+	public static EneParameter getOptimumParameter(String stockCode) {
+		EneParameter eneParameter = new EneParameter();
+		return eneParameter;
+	}
+
+	/**
+	 * 获取ENE指标上限
+	 * 
+	 * @param upper
+	 *            偏移程度
+	 * @param avgClose
+	 *            平均收盘价
+	 * @return
+	 */
+	private static double getUpperIndex(int upper, double avgClose) {
+		double floatDegree = upper / 100;
+		double upperIndex = (1 + floatDegree) * avgClose;
+		return upperIndex;
+	}
+
+	/**
+	 * 获取ENE指标下限
+	 * 
+	 * @param lower
+	 *            偏移程度
+	 * @param avgClose
+	 *            平均收盘价
+	 * @return
+	 */
+	private static double getLowerIndex(int lower, double avgClose) {
+		double floatDegree = lower / 100;
+		double lowerIndex = (1 - floatDegree) * avgClose;
+		return lowerIndex;
+	}
+
+	/**
+	 * 获取n天股票收盘价的均值
+	 * 
+	 * @param stockEneInfo
+	 *            股票数据
+	 * @param index
+	 *            股票数据在股票数据集合中的下标
+	 * @param days
+	 *            n天
+	 * @return 收盘价均值
+	 */
+	private static double getAvgClose(StockEneInfo stockEneInfo, int index, int days) {
+		Date date = stockEneInfo.getDate();
+		Date dateBefore = CommonUtil.getDaysAfter(date, days);
+		ArrayList<Double> closeList = new ArrayList<>();
+		double allClose = 0;
+
+		for (int i = 0; i < days; i++) {
+			StockEneInfo infoBefore = null;
+			if (index >= i) {
+				infoBefore = infoList.get(index - i);	
+			}else{
+				break;
+			}
+			System.out.println(infoBefore.getDate() +"------"+dateBefore);
+			if (infoBefore.getDate().getTime() >= dateBefore.getTime()) {
+				closeList.add(infoBefore.getClose());
+			}
+		}
+
+		for (double close : closeList) {
+			allClose += close;
+		}
+		double avgClose = allClose / closeList.size();
+
+		return avgClose;
+	}
+}

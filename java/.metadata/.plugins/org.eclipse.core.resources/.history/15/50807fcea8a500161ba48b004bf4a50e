@@ -1,0 +1,10 @@
+package org.nju.ene.util;
+
+import java.util.Date;
+
+public class CommonUtil {
+	public static Date transformDate(java.sql.Date date){
+		Date utilDate = new Date(date.getTime());
+		return utilDate;
+	}
+}
