@@ -2,7 +2,6 @@
 import MySQLdb
 from MySQLHelperUtil import MySQLHelperUtil
 from StockEneInfo import StockEneInfo
-import datetime
 
 class MySQLUtil():
     '''获取数据库的连接'''
