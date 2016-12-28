@@ -6,27 +6,27 @@ from StockEneInfo import StockEneInfo
 class MySQLUtil():
     '''获取数据库的连接'''
     def getConnection(self):
-        connection=False
+        connection = False
         try:
             connection = MySQLdb.connect(host="121.42.143.164",port=3306,user="admin",passwd="NJU2016",db="stock",charset="utf8")
             print "connect database successfully" 
         except Exception, data: 
-            connection=False 
+            connection = False
             print "connect database failed, %s" % data  
         return connection
     
     '''释放数据库连接'''
     def releaseConnection(self,connection):
-        if connection!=False:
+        if connection != False:
             connection.close()
             
-    def getStockEneInfos(self,stockCode):
+    def getStockEneInfos(self,stockCode, start_date, end_date):
         stockEneInfos = []
         helper = MySQLHelperUtil()
         stockName = helper.getStockInfoTableName(stockCode)
         connection = self.getConnection()
         cursor = connection.cursor()
-        sql = "select * from " + stockName + " where code='%s'" %stockCode
+        sql = "select * from " + stockName + " where code = '%s' and date between '%s' and '%s'" % (stockCode, start_date, end_date)
         
         try:
             cursor.execute(sql)
