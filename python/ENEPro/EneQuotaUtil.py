@@ -124,11 +124,14 @@ class EneQuotaUtil:
                 print all_money
                 purchase_index = index
 
+            # 判断一个是超过上次买入价格的程度或者达到上轨线需要卖出，一个是超过天数需要卖出
             if self.is_to_sale(info.getClose(), last_price, up_degree, upper) or index - purchase_index >= days_interval:
                 earn_money = purchase_num * 100 * info.getClose()
                 print "得到------"+str(earn_money)
                 all_money += earn_money
                 purchase_num = 0
+
+        all_money += purchase_num * 100 * self._INFOLIST[len(self._INFOLIST) - 1].getClose()
 
         print "获利： %s \n" % (all_money-money)
 
