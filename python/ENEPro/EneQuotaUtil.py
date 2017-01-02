@@ -156,8 +156,8 @@ class EneQuotaUtil:
                 is_to_purchase = True
         else:
             degree_percentenge = float((100 - degree)/100)
-            price_limit = last_price * (1 - degree_percentenge)
-            if now_price < price_limit:
+            price_limit = last_price * degree_percentenge
+            if now_price <= price_limit:
                 is_to_purchase = True
 
             if now_price <= lower:
@@ -184,9 +184,9 @@ class EneQuotaUtil:
         if last_price == 0:
             return False
 
-        degree_percentenge = float((100 - degree)/100)
-        price_limit = last_price * (1 - degree_percentenge)
-        if now_price < price_limit:
+        degree_percentenge = float((100 + degree)/100)
+        price_limit = last_price * degree_percentenge
+        if now_price >= price_limit:
             is_to_sale = True
 
         if now_price >= upper:
