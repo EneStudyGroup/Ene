@@ -22,5 +22,6 @@ if __name__ == '__main__':
     # ene.set_end_date(2016,6,6)
     # ene.set_start_date(2015,6,6)
     # ene.set_code('sh600011')
+#     ene_quato.getAllStocksParam()
 
     ene_quato.get_profit(ene, 10000, 10, 10, 10)

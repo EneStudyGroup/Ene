@@ -45,17 +45,23 @@ class EneParameterRange:
     def set_lower_min(self, lower_min):
         self.lower_min = lower_min
 
-    def get_days_max(self):
-        return self.days_max
-
-    def set_days_max(self, days_max):
-        self.days_max = days_max
-
-    def get_days_min(self):
-        return self.days_min;
-
-    def set_days_min(self, days_min):
-        self.days_min = days_min
+    def getDays(self) :
+        return self.daysList
+    
+    def setDays(self,daysList) :
+        self.daysList = daysList
+        
+#     def get_days_max(self):
+#         return self.days_max
+# 
+#     def set_days_max(self, days_max):
+#         self.days_max = days_max
+# 
+#     def get_days_min(self):
+#         return self.days_min;
+# 
+#     def set_days_min(self, days_min):
+#         self.days_min = days_min
 
     def get_start_date(self):
         return self.start_date

@@ -35,7 +35,7 @@ class EneParameter:
 
     def get_start_date(self):
         return self.start_date
-
+        
     def set_start_date(self, start_date):
         self.start_date = start_date
 
@@ -44,3 +44,9 @@ class EneParameter:
 
     def set_end_date(self, end_date):
         self.end_date = end_date
+
+    def getFrequency(self) :
+        return self.frequency
+    
+    def setFrequency(self,frequency) :
+        self.frequency = frequency

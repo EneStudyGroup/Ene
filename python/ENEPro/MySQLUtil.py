@@ -9,7 +9,7 @@ class MySQLUtil():
         connection = False
         try:
             connection = MySQLdb.connect(host="121.42.143.164",port=3306,user="admin",passwd="NJU2016",db="stock",charset="utf8")
-            print "connect database successfully" 
+#             print "connect database successfully" 
         except Exception, data: 
             connection = False
             print "connect database failed, %s" % data  
@@ -19,7 +19,26 @@ class MySQLUtil():
     def releaseConnection(self,connection):
         if connection != False:
             connection.close()
-            
+          
+    '''获取所有股票的code'''
+    def getAllStockCode(self):
+        stocksCode = []
+        connection = self.getConnection()
+        cursor = connection.cursor()
+        sql = "select code from StocksBasicInfo"
+        
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            for row in results:
+                code = row[0]
+                stocksCode.append(code)
+        except:
+            print "Error: unable to fecth data"
+        self.releaseConnection(connection)
+        return stocksCode  
+    
+    '''获取某一个股票的信息'''   
     def getStockEneInfos(self,stockCode, start_date, end_date):
         stockEneInfos = []
         helper = MySQLHelperUtil()

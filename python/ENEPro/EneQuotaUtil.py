@@ -9,6 +9,7 @@ from StockEneInfo import StockEneInfo
 from CommonUtil import CommonUtil
 from MySQLUtil import MySQLUtil
 from EneParameterRange import EneParameterRange
+import datetime
 
 
 class EneQuotaUtil:
@@ -29,15 +30,15 @@ class EneQuotaUtil:
         times = 0
         mysql = MySQLUtil()
         # print ene_param.get_start_date()
-        self._INFOLIST = mysql.getStockEneInfos(ene_param.get_code(), ene_param.get_start_date(),
+        self._INFOLIST=mysql.getStockEneInfos(ene_param.get_code(), ene_param.get_start_date(),
                                                 ene_param.get_end_date())
         length = len(self._INFOLIST)
-
+#         print 'len:',length
         for i in range(length):
             index = length - 1 - i
             info = self._INFOLIST[index]
             avgClose = self.getAvgClose(info, index, ene_param.get_days())
-            # print avgClose
+#             print "close: ",avgClose
             upper = self.getUpperIndex(ene_param.get_upper(), avgClose)
             # print upper
             lower = self.getLowerIndex(ene_param.get_lower(), avgClose)
@@ -46,7 +47,7 @@ class EneQuotaUtil:
                 times = times + 1
 
         frequency = float(times) / length
-        print frequency
+#         print frequency
         return frequency
 
     '''
@@ -62,7 +63,7 @@ class EneQuotaUtil:
         paramList = []
         for i in range(ene_range.get_upper_min(), ene_range.get_upper_max() + 1):
             for j in range(ene_range.get_lower_min(), ene_range.get_lower_max() + 1):
-                for k in range(ene_range.get_days_min(), ene_range.get_days_max() + 1):
+                for k in ene_range.getDays():
                     # print str(i)+"---"+str(j)+"---"+str(k)
                     param = EneParameter()
                     param.set_code(ene_range.get_code())
@@ -72,7 +73,8 @@ class EneQuotaUtil:
                     param.set_start_date(ene_range.get_start_date())
                     param.set_end_date(ene_range.get_end_date())
                     frequency = self.get_Standard_Frequency(param)
-                    # print frequency
+                    print frequency
+                    param.setFrequency(frequency)
                     frequencyList.append(frequency)
                     paramList.append(param)
 
@@ -82,14 +84,42 @@ class EneQuotaUtil:
         for index in indexList:
             param = paramList[index]
             optimumParamList.append(param)
-            print(frequencyList[index])
+#             print(frequencyList[index])
             print(param.get_code())
             print(param.get_upper())
             print(param.get_lower())
             print(param.get_days())
+            print(param.getFrequency())
             print '---------------------------'
         return optimumParamList
 
+    '''
+    把所有股票的最优参数写入到txt中
+    '''    
+    def getAllStocksParam(self):
+        mysqlutil = MySQLUtil()
+        stocksCodes = mysqlutil.getAllStockCode()
+        for index in stocksCodes:
+            start = datetime.datetime.now()
+#             print start
+            eneparam = EneParameterRange()
+            eneparam.set_code(index)
+            eneparam.setDays([3,5,10])
+#             eneparam.setDaysMax(11)
+#             eneparam.setDaysMin(9)
+            eneparam.set_lower_max(11)
+            eneparam.set_lower_min(9)
+            eneparam.set_upper_max(12)
+            eneparam.set_upper_min(10)
+            eneparam.set_end_date(2016, 10, 25)
+            eneparam.set_start_date(2013,10,8)
+            optimumParamList = self.get_Optimum_Param(eneparam)
+            for n in range(0,len(optimumParamList)):
+                fo = open("result.txt", "a")
+                fo.write(optimumParamList[n].get_code()+" "+str(optimumParamList[n].get_upper())+" "+str(optimumParamList[n].get_lower())+" "+str(optimumParamList[n].get_days())+" "+str(optimumParamList[n].getFrequency())+"\n")
+                fo.close()
+                end = datetime.datetime.now()
+#                 print (end-start).seconds
     '''
      * 回测
      *
@@ -184,14 +214,14 @@ class EneQuotaUtil:
         if last_price == 0:
             return False
 
-        degree_percentenge = float((100 + degree)/100)
+        degree_percentenge = float(100 + degree)/100
         price_limit = last_price * degree_percentenge
         if now_price >= price_limit:
             is_to_sale = True
-
+#             print "符合用户设置条件"
         if now_price >= upper:
             is_to_sale = True
-
+#             print "达到上轨"
         return is_to_sale
 
     '''
@@ -259,8 +289,16 @@ class EneQuotaUtil:
         avgClose = allClose / len(closeList)
         return avgClose
 
-        # p = EneQuotaUtil()
-
+p = EneQuotaUtil()
+# p.getAllStocksParam()
+# ene = EneParameter();
+# ene.set_days(5);
+# ene.set_lower(9);
+# ene.set_upper(10);
+# ene.set_code("sh600000");
+# ene.set_end_date("2016-10-25")
+# ene.set_start_date("2013-10-8")
+# print p.get_Standard_Frequency(ene);
 # eneparam = EneParameterRange()
 # eneparam.setCode("sh600011")
 # eneparam.setDaysMax(11)
