@@ -104,13 +104,13 @@ class EneQuotaUtil:
 #             print start
             eneparam = EneParameterRange()
             eneparam.set_code(index)
-            eneparam.setDays([3,5,10])
+            eneparam.setDays([4,5,6,7,8,9,10])
 #             eneparam.setDaysMax(11)
 #             eneparam.setDaysMin(9)
-            eneparam.set_lower_max(11)
+            eneparam.set_lower_max(12)
             eneparam.set_lower_min(9)
             eneparam.set_upper_max(12)
-            eneparam.set_upper_min(10)
+            eneparam.set_upper_min(9)
             eneparam.set_end_date(2016, 10, 25)
             eneparam.set_start_date(2013,10,8)
             optimumParamList = self.get_Optimum_Param(eneparam)
@@ -290,7 +290,7 @@ class EneQuotaUtil:
         return avgClose
 
 p = EneQuotaUtil()
-# p.getAllStocksParam()
+p.getAllStocksParam()
 # ene = EneParameter();
 # ene.set_days(5);
 # ene.set_lower(9);

@@ -5,7 +5,7 @@ class MySQLHelperUtil:
     def getStockInfoTableName(self,stockCode):
         pattern = re.compile(r'\d+')
         m = pattern.search(stockCode)
-        tableName = "StocksKInfo"
+        tableName = "stocksdaykinfo"
         if m:
             code = long(m.group())
 #             print code

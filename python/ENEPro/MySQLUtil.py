@@ -8,7 +8,7 @@ class MySQLUtil():
     def getConnection(self):
         connection = False
         try:
-            connection = MySQLdb.connect(host="121.42.143.164",port=3306,user="admin",passwd="NJU2016",db="stock",charset="utf8")
+            connection = MySQLdb.connect(host="114.212.245.165",port=3306,user="stock",passwd="NJU2017",db="stock",charset="utf8")
 #             print "connect database successfully" 
         except Exception, data: 
             connection = False
